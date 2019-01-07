@@ -197,8 +197,9 @@
               </li>
             </ul>
             <div class="card-footer d-flex justify-content-between">
-              <span>還有 3 筆任務未完成</span>
-              <a href="#">清除所有任務</a>
+              <span v-if="visibility !== 'completed'">還有 {{ todosLength }} 筆任務未完成</span>
+              <span v-if="visibility == 'completed'">已完成 {{ todosLength }} 筆任務</span>
+              <a href="#" @click="removeAllTodos">清除所有任務</a>
             </div>
           </div>
         </div>
@@ -215,7 +216,7 @@
               }],
               cacheTodo: {},
               cacheTitle: '',
-              visibility: 'all'
+              visibility: 'all',
             },
             methods: {
               addTodo: function () {
@@ -255,6 +256,9 @@
                 item.title = this.cacheTitle;
                 this.cacheTitle = '';
                 this.cacheTodo = {};
+              },
+              removeAllTodos: function() {
+                this.todos = [];
               }
             },
             computed: {
@@ -277,6 +281,13 @@
                     }
                   })
                   return newTodos;
+                }
+              },
+              todosLength: function () {
+                if (this.visibility !== 'completed'){
+                return this.todos.filter( item => item.completed == false).length;
+                } else {
+                return this.todos.filter( item => item.completed !== false).length;
                 }
               }
             }
